@@ -1,0 +1,196 @@
+#include <gb/gb.h>
+#include <stdio.h>
+#include <gb/font.h>
+#include "backgrounds/CheckerBackground.c"
+#include "sprites/flyinghat.c"
+#include "backgrounds/simplebackground.c"
+#include "backgrounds/simplebackgroundmap.c"
+#include "backgrounds/windowmap.c"
+#include "sprites/stickman.c"
+
+// Declare playerlocation as a global variable
+INT8 playerlocation[2]; // [0] = x, [1] = y
+BYTE jumping;
+INT8 gravity = -2;
+INT8 currentspeedY;
+UINT8 floorYPosition = 100;
+INT8 possiblesurfaceY;
+
+// Define sprite offsets for the multi-tile character
+INT8 spriteOffsets[] = {0, 8, 16}; // Top, middle, bottom
+
+// Function to create a delay
+void performantdelay(UINT8 numloops)
+{
+    UINT8 i;
+    for (i = 0; i < numloops; i++)
+    {
+        wait_vbl_done(); // Ensure this function is properly called
+    }
+}
+
+// Function to check if the player would hit the surface
+INT8 wouldhitsurface(UINT8 projectedYPosition)
+{
+    if (projectedYPosition >= floorYPosition)
+    {
+        return floorYPosition;
+    }
+    return -1;
+}
+
+// Generalized function to move a multi-tile sprite
+void moveMultiTileSprite(UINT8 spriteID, UINT8 numTiles, INT8 location[2], INT8 offsets[])
+{
+    UINT8 i; // Declare variables at the beginning of the block
+    for (i = 0; i < numTiles; i++)
+    {
+        move_sprite(spriteID + i, location[0], location[1] + offsets[i]);
+    }
+}
+
+// Function to handle jumping
+void jump(UINT8 spriteID, UINT8 numTiles, INT8 location[2], INT8 offsets[])
+{
+    if (jumping == 0)
+    {
+        jumping = 1;
+        currentspeedY = 10;
+    }
+
+    // Apply gravity to speed
+    currentspeedY += gravity;
+
+    // Update player's Y position
+    location[1] -= currentspeedY;
+
+    // Check if the player would hit the surface
+    possiblesurfaceY = wouldhitsurface(location[1]);
+
+    if (possiblesurfaceY > -1)
+    {
+        jumping = 0;
+        location[1] = possiblesurfaceY; // Land on the surface
+    }
+
+    // Move all tiles of the sprite
+    moveMultiTileSprite(spriteID, numTiles, location, offsets);
+}
+
+void main()
+{
+    // Load stickman sprite data
+    set_sprite_data(0, 3, stickman);
+
+    // Set each tile of the stickman to different sprites
+    set_sprite_tile(0, 0);
+    set_sprite_tile(1, 1);
+    set_sprite_tile(2, 2);
+
+    // Set initial player position
+    playerlocation[0] = 10;
+    playerlocation[1] = floorYPosition;
+    jumping = 0;
+
+    // Initial positioning of the stickman sprite
+    moveMultiTileSprite(0, 3, playerlocation, spriteOffsets);
+
+    DISPLAY_ON;
+    SHOW_SPRITES;
+
+    while (1)
+    {
+        // Move left
+        if (joypad() & J_LEFT)
+        {
+            playerlocation[0] -= 10; // Move player left
+            moveMultiTileSprite(0, 3, playerlocation, spriteOffsets);
+        }
+
+        // Move right
+        if (joypad() & J_RIGHT)
+        {
+            playerlocation[0] += 10; // Move player right
+            moveMultiTileSprite(0, 3, playerlocation, spriteOffsets);
+        }
+
+        // Jump (e.g., pressing the A button)
+        if ((joypad() & J_A) || jumping == 1)
+        {
+            jump(0, 3, playerlocation, spriteOffsets); // Now jump applies to a multi-tile sprite
+        }
+
+        performantdelay(5); // Create delay
+    }
+}
+
+// NR52_REG = 0x80;
+// NR50_REG = 0x77;
+// NR51_REG = 0xFF;
+
+// while (1)
+// {
+//     UBYTE joypad_state = joypad();
+
+//     if (joypad_state)
+//     {
+//         NR10_REG = 0x16;
+//         NR11_REG = 0x40;
+//         NR12_REG = 0x73;
+//         NR13_REG = 0x00;
+//         NR14_REG = 0xC3;
+
+//         delay(100);
+//     }
+// }
+
+// font_t min_font;
+
+// font_init();
+// min_font = font_load(font_min); // 36 tiles
+// font_set(min_font);
+
+// set_bkg_data(37, 7, backgroundtiles);
+// set_bkg_tiles(0, 0, 40, 18, backgroundmap);
+
+// set_win_tiles(0, 0, 5, 1, windowmap);
+// move_win(7, 135);
+// SHOW_BKG;
+// SHOW_WIN;
+// DISPLAY_ON;
+
+// while (1)
+// {
+//     scroll_bkg(1, 0);
+//     delay(100);
+// }
+//     UINT8 currentspriteindex = 0;
+
+//     set_sprite_data(0, 4, flyinghat);
+//     set_sprite_tile(0, 0);
+//     move_sprite(0, 88, 78);
+//     SHOW_SPRITES;
+
+//     while (1)
+//     {
+//         currentspriteindex = (currentspriteindex + 1) % 4;
+
+//         set_sprite_tile(0, currentspriteindex);
+
+//         switch (joypad())
+//         {
+//         case J_LEFT:
+//             scroll_sprite(0, -10, 0);
+//             break;
+//         case J_RIGHT:
+//             scroll_sprite(0, 10, 0);
+//             break;
+//         case J_UP:
+//             scroll_sprite(0, 0, -10);
+//             break;
+//         case J_DOWN:
+//             scroll_sprite(0, 0, 10);
+//             break;
+//         }
+//         delay(100);
+//     }
