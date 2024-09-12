@@ -10,6 +10,7 @@ AREA .  .ABS.
 		l__GSFINAL	0000
 		l__ISEG	0000
 		s_.  .ABS.	0000
+		_SimpleFish	0000
 		s__HEADER	0000
 		l__XSEG	0000
 		.init	0000
@@ -17,48 +18,45 @@ AREA .  .ABS.
 		l__LIT	0000
 		s__SFR	0000
 		l__GSINITTAIL	0001
+		l__GSINIT	000A
+		l__DATA	0016
 		l__BSS	005C
-		l__DATA	0138
 		l__HOME	01AC
 		l__HEADER	01E1
 		s__CODE	0200
 		l__BASE	0248
-		l__CODE	0389
-		s__HOME	0589
-		l__GSINIT	06D4
-		s__BASE	0735
-		s__LIT	097D
-		s__GSINIT	097D
-		s__GSINITTAIL	1051
-		s__GSFINAL	1052
+		l__CODE	02A1
+		s__HOME	04A1
+		s__BASE	064D
+		s__LIT	0895
+		s__GSINIT	0895
+		s__GSINITTAIL	089F
+		s__GSFINAL	08A0
 		.OAM	C000
 		s__DATA	C0A0
-		s__BSS	C1D8
-		s__HEAP	C234
-		s__BSEG	C234
-		s__ISEG	C234
-		s__XSEG	C234
-		s__OVERLAY	C234
+		s__BSS	C0B6
+		s__HEAP	C112
+		s__BSEG	C112
+		s__ISEG	C112
+		s__XSEG	C112
+		s__OVERLAY	C112
 		.STACK	E000
 		.refresh_OAM	FF80
 		l__SFR	10000
 AREA _CODE
 	RADIX HEX
 	BASE 0200
-	SIZE 0389
+	SIZE 02A1
 	ATTRIB REL CON
 	GLOBALS
-		_movegamecharacter	0200
-		_rightFacingSpriteTiles	02CD
-		_leftFacingSpriteTiles	02D3
-		_spearSpriteTiles	02D9
-		_setupFishSprites	02DF
-		_setupSpearSprites	035A
-		_switchFishSprite	03D9
-		_setupFish	0409
-		_setupSpear	0448
-		_get_random	0470
-		_main	048C
+		_moveGameCharacter	0200
+		_rightFacingSpriteTiles	0283
+		_leftFacingSpriteTiles	0289
+		_setupFishSprites	028F
+		_switchFishSprite	0305
+		_setupFish	0335
+		_setupSpear	0374
+		_main	03D0
 AREA _HEADER
 	RADIX HEX
 	BASE 0000
@@ -68,175 +66,173 @@ AREA _HEADER
 		_exit	01D2
 AREA _HOME
 	RADIX HEX
-	BASE 0589
+	BASE 04A1
 	SIZE 01AC
 	ATTRIB REL CON
 	GLOBALS
-		.set_mode	0589
-		.remove_VBL	0599
-		.remove_LCD	059F
-		.remove_TIM	05A5
-		.remove_SIO	05AB
-		.remove_JOY	05B1
-		.add_VBL	05B7
-		.add_LCD	05BD
-		.add_TIM	05C3
-		.add_SIO	05C9
-		.add_JOY	05CF
-		.remove_int	05D5
-		.add_int	05F5
-		.wait_vbl_done	0611
-		_wait_vbl_done	0611
-		_display_off	0628
-		.display_off	0628
-		.serial_IO	0649
-		_mode	0678
-		_get_mode	0681
-		_enable_interrupts	0686
-		_disable_interrupts	0688
-		_reset	068A
-		.reset	068A
-		_set_interrupts	0690
-		_remove_VBL	069B
-		_remove_LCD	06A6
-		_remove_TIM	06B1
-		_remove_SIO	06BC
-		_remove_JOY	06C7
-		_add_VBL	06D2
-		_add_LCD	06DD
-		_add_TIM	06E8
-		_add_SIO	06F3
-		_add_JOY	06FE
-		_clock	0709
-		__printTStates	0712
-		banked_call	0713
-		banked_ret	072C
+		.set_mode	04A1
+		.remove_VBL	04B1
+		.remove_LCD	04B7
+		.remove_TIM	04BD
+		.remove_SIO	04C3
+		.remove_JOY	04C9
+		.add_VBL	04CF
+		.add_LCD	04D5
+		.add_TIM	04DB
+		.add_SIO	04E1
+		.add_JOY	04E7
+		.remove_int	04ED
+		.add_int	050D
+		.wait_vbl_done	0529
+		_wait_vbl_done	0529
+		_display_off	0540
+		.display_off	0540
+		.serial_IO	0561
+		_mode	0590
+		_get_mode	0599
+		_enable_interrupts	059E
+		_disable_interrupts	05A0
+		_reset	05A2
+		.reset	05A2
+		_set_interrupts	05A8
+		_remove_VBL	05B3
+		_remove_LCD	05BE
+		_remove_TIM	05C9
+		_remove_SIO	05D4
+		_remove_JOY	05DF
+		_add_VBL	05EA
+		_add_LCD	05F5
+		_add_TIM	0600
+		_add_SIO	060B
+		_add_JOY	0616
+		_clock	0621
+		__printTStates	062A
+		banked_call	062B
+		banked_ret	0644
 AREA _BASE
 	RADIX HEX
-	BASE 0735
+	BASE 064D
 	SIZE 0248
 	ATTRIB REL CON
 	GLOBALS
-		.mv_sprite	0735
-		_move_sprite	0744
-		__modslong	0751
-		__divslong	0751
-		__mulslong	0751
-		__divschar	0752
-		__modschar	075E
-		__divsint	0769
-		__modsint	077A
-		__divuchar	0789
-		__moduchar	0795
-		__divuint	07A0
-		__moduint	07B1
-		.mod8	07C0
-		.div8	07C0
-		.mod16	07C8
-		.div16	07C8
-		.modu8	07FE
-		.divu8	07FE
-		.modu16	0801
-		.divu16	0801
-		_set_win_data	083E
-		_set_bkg_data	083E
-		_set_sprite_data	088B
-		__mulschar	08BA
-		__muluchar	08BA
-		__mulsint	08C6
-		__muluint	08C6
-		.mulu16	08DA
-		.mul16	08DA
-		.padup	08F0
-		_waitpadup	08F0
-		.jpad	0900
-		.wait_pad	092D
-		_joypad	0934
-		_waitpad	0939
-		.set_sprite_tile	0943
-		_set_sprite_tile	0950
-		.copy_vram	095B
-		_get_data	096A
-		_set_data	096A
+		.mv_sprite	064D
+		_move_sprite	065C
+		__modslong	0669
+		__divslong	0669
+		__mulslong	0669
+		__divschar	066A
+		__modschar	0676
+		__divsint	0681
+		__modsint	0692
+		__divuchar	06A1
+		__moduchar	06AD
+		__divuint	06B8
+		__moduint	06C9
+		.mod8	06D8
+		.div8	06D8
+		.mod16	06E0
+		.div16	06E0
+		.modu8	0716
+		.divu8	0716
+		.modu16	0719
+		.divu16	0719
+		_set_win_data	0756
+		_set_bkg_data	0756
+		_set_sprite_data	07A3
+		__mulschar	07D2
+		__muluchar	07D2
+		__mulsint	07DE
+		__muluint	07DE
+		.mulu16	07F2
+		.mul16	07F2
+		.padup	0808
+		_waitpadup	0808
+		.jpad	0818
+		.wait_pad	0845
+		_joypad	084C
+		_waitpad	0851
+		.set_sprite_tile	085B
+		_set_sprite_tile	0868
+		.copy_vram	0873
+		_get_data	0882
+		_set_data	0882
 AREA _LIT
 	RADIX HEX
-	BASE 097D
+	BASE 0895
 	SIZE 0000
 	ATTRIB REL CON
 AREA _GSINIT
 	RADIX HEX
-	BASE 097D
-	SIZE 06D4
+	BASE 0895
+	SIZE 000A
 	ATTRIB REL CON
 	GLOBALS
-		gsinit	097D
+		gsinit	0895
 AREA _GSINITTAIL
 	RADIX HEX
-	BASE 1051
+	BASE 089F
 	SIZE 0001
 	ATTRIB REL CON
 AREA _GSFINAL
 	RADIX HEX
-	BASE 1052
+	BASE 08A0
 	SIZE 0000
 	ATTRIB REL CON
 AREA _DATA
 	RADIX HEX
 	BASE C0A0
-	SIZE 0138
+	SIZE 0016
 	ATTRIB REL CON
 	GLOBALS
-		_SimpleFish	C0A0
-		_fish	C1C0
-		_spear	C1CA
-		_spritesize	C1D4
-		_facingRight	C1D5
-		_random_seed	C1D7
+		_fish	C0A0
+		_spear	C0AA
+		_spritesize	C0B4
+		_facingRight	C0B5
 AREA _BSS
 	RADIX HEX
-	BASE C1D8
+	BASE C0B6
 	SIZE 005C
 	ATTRIB REL CON
 	GLOBALS
-		__cpu	C1D8
-		.mode	C1D9
-		__io_out	C1DA
-		__io_in	C1DB
-		__io_status	C1DC
-		.vbl_done	C1DD
-		__current_bank	C1DE
-		_sys_time	C1DF
-		.sys_time	C1DF
-		.int_0x40	C1E1
-		.int_0x48	C1F1
-		.int_0x50	C201
-		.int_0x58	C211
-		.int_0x60	C221
+		__cpu	C0B6
+		.mode	C0B7
+		__io_out	C0B8
+		__io_in	C0B9
+		__io_status	C0BA
+		.vbl_done	C0BB
+		__current_bank	C0BC
+		_sys_time	C0BD
+		.sys_time	C0BD
+		.int_0x40	C0BF
+		.int_0x48	C0CF
+		.int_0x50	C0DF
+		.int_0x58	C0EF
+		.int_0x60	C0FF
 AREA _HEAP
 	RADIX HEX
-	BASE C234
+	BASE C112
 	SIZE 0000
 	ATTRIB REL CON
 	GLOBALS
-		_malloc_heap_start	C234
+		_malloc_heap_start	C112
 AREA _OVERLAY
 	RADIX HEX
-	BASE C234
+	BASE C112
 	SIZE 0000
 	ATTRIB REL CON
 AREA _ISEG
 	RADIX HEX
-	BASE C234
+	BASE C112
 	SIZE 0000
 	ATTRIB REL CON
 AREA _BSEG
 	RADIX HEX
-	BASE C234
+	BASE C112
 	SIZE 0000
 	ATTRIB REL CON
 AREA _XSEG
 	RADIX HEX
-	BASE C234
+	BASE C112
 	SIZE 0000
 	ATTRIB REL CON
 AREA _SFR
@@ -304,7 +300,7 @@ MODULES
 	FILE c:\gbdk\lib/small/asxxxx/gb/crt0.o
 		NAME Runtime
 	FILE main.o
-		NAME lcc98200
+		NAME lcc275200
 LIBRARIES
 	LIBRARY c:\gbdk\lib/small/asxxxx/gb/gb.lib
 		MODULE sfr.o
@@ -331,3 +327,5 @@ USERGLOBALDEF
 	.STACK=0xE000
 	.refresh_OAM=0xFF80
 	.init=0x0000
+
+?ASlink-Warning-Undefined Global _SimpleFish referenced by module lcc275200

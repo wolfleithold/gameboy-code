@@ -7,7 +7,7 @@
 typedef unsigned char UINT8;
 
 // Function prototypes
-void movegamecharacter(struct GameCharacter *character, UINT8 x, UINT8 y, UBYTE vertical);
+void movegamecharacter(struct GameCharacter *character, UINT8 x, UINT8 y, UBYTE horizontal);
 void setupFishSprites(struct GameCharacter *fish, const UINT8 *spriteTiles);
 void setupSpearSprites(struct GameCharacter *spear, const UINT8 *spriteTiles);
 void switchFishSprite(UBYTE isMovingRight);
@@ -107,23 +107,13 @@ void setupFish()
 void setupSpear()
 {
     spear.x = 80; // Position the spear
-    spear.y = 0;  // Adjust this if necessary to keep it on-screen
+    spear.y = 16; // Adjust this if necessary to keep it on-screen
     spear.width = spritesize;
     spear.height = 48;
 
     // Set up spear using its own sprite tiles and sprite IDs
     setupSpearSprites(&spear, spearSpriteTiles);
 }
-
-// Simple PRNG function
-UINT8 get_random()
-{
-    static UINT8 state = 0;
-    state = (state * 33 + 17) & 0xFF; // Use smaller constants
-    return state;
-}
-
-UINT8 random_seed = 0;
 
 void main()
 {
@@ -140,7 +130,6 @@ void main()
     {
         UBYTE joypadState = joypad();
         UBYTE isMovingRight = facingRight; // Assume the fish is facing its current direction
-        UINT8 random_x;                    // Declare random_x at the start of the loop
 
         // Move left or right based on player input
         if (joypadState & J_LEFT)
@@ -163,18 +152,10 @@ void main()
         // Move the fish sprite to the new position
         movegamecharacter(&fish, fish.x, fish.y, 0);
 
-        // Move the spear downward
         spear.y += 2;       // Adjust speed by changing the value (e.g., 1 for slower, 2 for faster)
         if (spear.y >= 160) // If the spear goes off the bottom of the screen, reset its position
         {
             spear.y = 0; // Reset spear to the top of the screen
-
-            // Generate a random x position for the spear
-            random_x = get_random() % 160; // Random x position within screen width (160 pixels)
-            spear.x = random_x;
-
-            // Update the PRNG seed
-            random_seed++;
         }
 
         // Move the spear sprite to the new position

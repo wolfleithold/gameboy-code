@@ -1,6 +1,6 @@
 /*
 
- SIMPLEFISH.H
+ SPEAR.H
 
  Include File.
 
@@ -10,7 +10,7 @@
   Compression          : None.
   Counter              : None.
   Tile size            : 8 x 8
-  Tiles                : 0 to 17
+  Tiles                : 12 to 17
 
   Palette colors       : None.
   SGB Palette          : None.
@@ -24,8 +24,8 @@
 
 
 /* Bank of tiles. */
-#define SimpleFishBank 0
+#define SpearBank 0
 /* Start of tile array. */
-extern unsigned char SimpleFish[];
+extern unsigned char Spear[];
 
-/* End of SIMPLEFISH.H */
+/* End of SPEAR.H */
