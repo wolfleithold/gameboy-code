@@ -7,16 +7,19 @@
 typedef unsigned char UINT8;
 
 // Function prototypes
-void movegamecharacter(struct GameCharacter *character, UINT8 x, UINT8 y, UBYTE horizontal);
+void movegamecharacter(struct GameCharacter *character, UINT8 x, UINT8 y, UBYTE vertical);
 void setupFishSprites(struct GameCharacter *fish, const UINT8 *spriteTiles);
 void setupSpearSprites(struct GameCharacter *spear, const UINT8 *spriteTiles);
 void switchFishSprite(UBYTE isMovingRight);
 void setupFish();
-void setupSpear();
+void setupSpear(struct GameCharacter *spear, UINT8 x, UINT8 y);
 
 // Declare GameCharacter struct for fish and spear
 struct GameCharacter fish;
 struct GameCharacter spear;
+struct GameCharacter spear1;
+struct GameCharacter spear2;
+struct GameCharacter *spears[] = {&spear, &spear1, &spear2};
 
 UBYTE spritesize = 8;
 UBYTE facingRight = 1; // 1 for right, 0 for left
@@ -104,17 +107,18 @@ void setupFish()
 }
 
 // Set up the spear character
-void setupSpear()
+void setupSpear(struct GameCharacter *spear, UINT8 x, UINT8 y)
 {
-    spear.x = 80; // Position the spear
-    spear.y = 16; // Adjust this if necessary to keep it on-screen
-    spear.width = spritesize;
-    spear.height = 48;
+    spear->x = x; // Set initial x position
+    spear->y = y; // Set initial y position
+    spear->width = spritesize;
+    spear->height = 48;
 
     // Set up spear using its own sprite tiles and sprite IDs
-    setupSpearSprites(&spear, spearSpriteTiles);
+    setupSpearSprites(spear, spearSpriteTiles); // This remains the same
 }
 
+// Simple PRNG function
 UINT8 get_random()
 {
     static UINT8 state = 0;
@@ -122,15 +126,27 @@ UINT8 get_random()
     return state;
 }
 
+UINT8 random_seed = 0;
+
 void main()
 {
-    set_sprite_data(0, 18, SimpleFish); // Load sprite tiles into memory
+    int i;
+    struct GameCharacter *spears[] = {&spear, &spear1, &spear2};
+    set_sprite_data(0, 18, SimpleFish); // Load SimpleFish tiles into sprite memory
 
-    setupFish();  // Set up the fish character
-    setupSpear(); // Set up the spear character
+    setupFish(); // Set up the fish character
+
+    // Define an array of pointers to handle all spears
+
+    // Initialize multiple spears with different positions
+    setupSpear(spears[0], 80, 0);  // First spear at x=80, y=0
+    setupSpear(spears[1], 40, 0);  // Second spear at x=40, y=0
+    setupSpear(spears[2], 120, 0); // Third spear at x=120, y=0
 
     SHOW_SPRITES;
     DISPLAY_ON;
+
+    // Declare 'i' here at the beginning of the block
 
     // Main game loop
     while (1)
@@ -138,7 +154,7 @@ void main()
         UBYTE joypadState = joypad();
         UBYTE isMovingRight = facingRight; // Assume the fish is facing its current direction
 
-        // Move left or right based on player input
+        // Fish movement logic remains unchanged
         if (joypadState & J_LEFT)
         {
             fish.x -= 2;       // Move left
@@ -159,17 +175,20 @@ void main()
         // Move the fish sprite to the new position
         movegamecharacter(&fish, fish.x, fish.y, 0);
 
-        // Move and update the spear
-        spear.y += 2;       // Adjust speed by changing the value (e.g., 1 for slower, 2 for faster)
-        if (spear.y >= 160) // If the spear goes off the bottom of the screen, reset its position
+        // Update and move each spear in the array
+        for (i = 0; i < 3; i++) // 'i' is now valid here
         {
-            spear.y = 0;                  // Reset spear to the top of the screen
-            spear.x = get_random() % 160; // Randomize x position (0 to 159)
+            struct GameCharacter *s = spears[i]; // Pointer to the current spear
+
+            s->y += 2;       // Adjust speed by changing the value (e.g., 1, 2, 3, etc.)
+            if (s->y >= 160) // Reset spear when it reaches the bottom of the screen
+            {
+                s->y = 0;                  // Reset to the top of the screen
+                s->x = get_random() % 160; // Randomize x position on reset
+            }
+            movegamecharacter(s, s->x, s->y, 1); // Move the spear (1 for vertical alignment)
         }
 
-        // Move the spear sprite to the new position
-        movegamecharacter(&spear, spear.x, spear.y, 1); // Spear falls down
-
-        wait_vbl_done(); // Wait for the vertical blank to sync the display
+        wait_vbl_done(); // Wait for vertical blank to avoid tearing
     }
 }
