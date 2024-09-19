@@ -115,16 +115,9 @@ void setupSpear()
     setupSpearSprites(&spear, spearSpriteTiles);
 }
 
-UINT8 get_random()
-{
-    static UINT8 state = 0;
-    state = (state * 33 + 17) & 0xFF; // Use smaller constants
-    return state;
-}
-
 void main()
 {
-    set_sprite_data(0, 18, SimpleFish); // Load sprite tiles into memory
+    set_sprite_data(0, 18, SimpleFish); // Load SimpleFish tiles into sprite memory
 
     setupFish();  // Set up the fish character
     setupSpear(); // Set up the spear character
@@ -159,12 +152,10 @@ void main()
         // Move the fish sprite to the new position
         movegamecharacter(&fish, fish.x, fish.y, 0);
 
-        // Move and update the spear
         spear.y += 2;       // Adjust speed by changing the value (e.g., 1 for slower, 2 for faster)
         if (spear.y >= 160) // If the spear goes off the bottom of the screen, reset its position
         {
-            spear.y = 0;                  // Reset spear to the top of the screen
-            spear.x = get_random() % 160; // Randomize x position (0 to 159)
+            spear.y = 0; // Reset spear to the top of the screen
         }
 
         // Move the spear sprite to the new position
